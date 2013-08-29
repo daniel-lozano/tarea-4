@@ -6,6 +6,6 @@ main(){
   int k=j+1;
   printf(k);
   printf(".......................\n");
-  
+  printf("HOOLLLAA\n");  
 
 }
