@@ -3,7 +3,8 @@
 main(){
   int i=0;
   int j=1;
-  j+1;
+  int k=j+1;
+  printf(k);
   printf(".......................\n");
   
 
