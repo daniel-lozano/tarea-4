@@ -55,6 +55,7 @@ void main(int argc,char **argv){
   // se crea el arreglo de datos de tamaño filas*(numero+1)
 
   int pos;
+
   //matriz
   float *m1;
   float *mt1;
@@ -85,7 +86,7 @@ void main(int argc,char **argv){
   //se crea la matriz en gsl}
 
   gsl_matrix_view m= gsl_matrix_view_array (m1, filas, columnas);
-  gsl_matrix_view m= gsl_matrix_view_array (m1, filas, columnas);
+  gsl_matrix_view mt= gsl_matrix_view_array (mt1, filas, columnas);
 
   gsl_matrix * C = gsl_matrix_alloc(m,n1);
  
