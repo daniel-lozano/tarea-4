@@ -137,11 +137,12 @@ void main(int argc,char **argv){
 
   gsl_matrix * FuncionXi= gsl_matrix_alloc(filas,1);
 
-  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, mt, resultado, 0.0, FuncionXi);
+  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, m, resultado, 0.0, FuncionXi);
 			
   // sacar shi
   int i,j;			
   int shi=0;			
+			//gsl cuenta desde 1 o 0??
 
   for(i=0;i<filas;i++){
 
