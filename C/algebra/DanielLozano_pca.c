@@ -30,6 +30,7 @@ void main (int argc,char **argv){
   }while(fg!=EOF);
   rewind(file);
   printf("el numero de filas es %d \n", filas);
+
   //se tiene el numero de columnas y filas del archivo, con la restriccion de qu   e el archivo siempre tendra 24 columnas
 
   gsl_matrix * vectores=gsl_matrix_alloc(filas,columnas);
@@ -39,6 +40,15 @@ void main (int argc,char **argv){
   gsl_matrix_fscanf(file,vectores);
 
   printf("datos guardados...\n");
+
+  //imprime los datos
+
+  // for(i=0;i<columnas;i++){
+  // for(j=0;j<filas;j++){
+  //   printf("%lf ",gsl_matrix_get(vectores,j,i));}
+  // printf("\n");
+  // }
+
 
   gsl_matrix *co= gsl_matrix_alloc(filas,filas);
 
@@ -57,9 +67,11 @@ void main (int argc,char **argv){
 
     for(j=0;j<columnas;j++){
 
-    total=total+gsl_matrix_get(vectores,i,j)/columnas;}
+    total=total+gsl_matrix_get(vectores,i,j)/columnas;
+    }
     pro[i]=total;
   }
+
   //se creara la matriz de covarianza
  
   for(i=0;i<filas;i++){
@@ -67,37 +79,47 @@ void main (int argc,char **argv){
     for(j=0;j<filas;j++){
       double suma;
       for(k=0;k<columnas;k++){
-	suma=pow((gsl_matrix_get(vectores,i,k)-pro[i]),2)/(columnas-1);
+	suma=suma+(gsl_matrix_get(vectores,i,k)-pro[i])*(gsl_matrix_get(vectores,j,k)-pro[j])/(columnas-1);
       
       }
       gsl_matrix_set(co,i,j,suma);
+      suma=0;
     }
   }
+
+
+  //se imprime la matriz de covarianza----------------------
+
+  /**  printf("matriz de covarianza \n");
+  for(i=0;i<filas;i++){
+
+    for(j=0;j<filas;j++){
+
+      printf("%lf  " ,gsl_matrix_get(co,i,j));
+    }
+    printf("\n");
+    }*/
+  
   //  gsl_matrix * vectores=gsl_matrix_alloc(filas,columnas);  printf("se creo la matriz de covarianza\n");
 
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------
-
+//-------------------------------------------------------------------------------------------------------
   gsl_eigen_symmv_workspace * w = gsl_eigen_symmv_alloc (filas);
+  printf("funciona w?\n");
 
-    gsl_vector *eval = gsl_vector_alloc (filas);
+  gsl_vector *eval = gsl_vector_alloc (filas);
+  printf("funciona eval?\n");
 
-    
-    
-
-    printf("funciona?\n");
-
-    gsl_matrix *evec = gsl_matrix_alloc (filas,filas);
-    //problema????????????????????????????????????????
-    
-      
-    gsl_eigen_symmv (co, eval, evec, w);
-    
+  //problema????????????????????????????????????????
+  gsl_matrix *evec = gsl_matrix_alloc (filas,filas);
+  printf("funciona evec?\n");
+  
+  gsl_eigen_symmv (co, eval, evec, w);
+       
    
-    
 //  gsl_eigen_symmv_sort (eval, evec,GSL_EIGEN_SORT_ABS_DESC);
 
 //Organizar en una matriz los 10 vectores propios correspondientes a los 10 valores propios más grandes
@@ -136,39 +158,49 @@ void main (int argc,char **argv){
     //recosntruccion--------------------------------------------------------------------------matriz vectores escrita con los primeros 10 primeros //vectores propios
 
  //imprime la descomposicion de todas las señales en el producton punto de los vectores con los vectores propios
+    
     out2 = fopen("DanielLozano_pca_chisquare.dat ","w");
+    
+    gsl_matrix *As=gsl_matrix_alloc(10,columnas);
 
- for(i=0;i<columnas;i++){
-      //recorre los vectores propios
+      for(i=0;i<columnas;i++){
+	//recorre los vectores propios
      
-     
-      for(j=0;j<10;j++){
+	
+	for(j=0;j<10;j++){
 	//recorre las señales inciales
-	double suma=0;
-	fprintf(out2,"evec%d, vect%d: ",j,i);
+	  double suma=0;
+	  fprintf(out2,"evec%d, vect%d:\n ",j,i);
 
-	//producto punto
-	for(k=0;k<filas;k++){
-	 suma=suma+gsl_matrix_get(vectores,j,k)*gsl_matrix_get(evec,i,k);
+	  //producto punto
+	  for(k=0;k<filas;k++){
+	    suma=suma+gsl_matrix_get(vectores,k,j)*gsl_matrix_get(evec,k,i);
+	  }
+	  
+	  //guarda los A en la matriz As
+	  gsl_matrix_set(As,i,j,suma);
+	  fprintf(out2,"%lf  ",suma);
+	  suma=0;
 	}
-	fprintf(out2,"%lf  ",suma);
+	fprintf(out2,"\n");
       }
-      fprintf(out2,"\n");
-    }
 
  printf("se ha hallado X²\n");
 
  //calcular X²-----------------------------------------------------
+ // gsl_matrix *As=gsl_matrix_alloc(columnas,10);
+
+ //se crea una matriz que tenga la reconstruccion de las señales con los As correspondientes
 
  printf("hallando los X²...\n");
 
  for(i=0;i<columnas;i++){
    
-   for(j=0;j<columnas;j++){
-
+   for(j=0;j<filas;j++){
+     
      printf("x² de %d,%d:",i,j);
      double suma=0;
-
+     
      for(k=0;k<filas;k++){
 
        suma=suma+(gsl_matrix_get(vectores,j,k)-gsl_matrix_get(vectores,i,k))/columnas;
@@ -176,6 +208,10 @@ void main (int argc,char **argv){
      fprintf(out2,"el valor de x² de el vector %d,%d es %lf",i,j,suma);
    }
  }
+ 
+
+
+
 
  gsl_vector_free (eval);
  gsl_matrix_free (evec);
