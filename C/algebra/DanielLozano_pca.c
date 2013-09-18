@@ -162,7 +162,19 @@ void main (int argc,char **argv){
     out2 = fopen("DanielLozano_pca_chisquare.dat ","w");
     
     gsl_matrix *As=gsl_matrix_alloc(10,columnas);
+    gsl_matrix *se=gsl_matrix_alloc(filas,10);
+    gsl_matrix *recontruccion=gsl_matrix_alloc(filas,columnas);
 
+    //se crea el arreglo de las 10 primeras señales
+    
+    for(i=0;i<10;i++){
+      for(j=0;j<filas;j++){
+	gsl_matrix_set(se,i,j,gsl_matrix_get(evec,i,j));}
+	}
+    
+
+    //se crea la matriz de los 10 primeros vectores propios
+    
       for(i=0;i<columnas;i++){
 	//recorre los vectores propios
      
@@ -180,12 +192,17 @@ void main (int argc,char **argv){
 	  //guarda los A en la matriz As
 	  gsl_matrix_set(As,i,j,suma);
 	  fprintf(out2,"%lf  ",suma);
-	  suma=0;
+
+    	  suma=0;
 	}
 	fprintf(out2,"\n");
       }
+      
+      //se crea la matriz de recontruccion
 
- printf("se ha hallado X²\n");
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, se, As, 0.0, recontruccion);
+
+      printf("se ha hallado X²\n");
 
  //calcular X²-----------------------------------------------------
  // gsl_matrix *As=gsl_matrix_alloc(columnas,10);
