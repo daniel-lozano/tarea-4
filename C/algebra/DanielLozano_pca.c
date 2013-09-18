@@ -215,13 +215,15 @@ void main (int argc,char **argv){
 
  for(i=0;i<columnas;i++){
 
-   int suma=0;
+   double suma=0;
    fprintf(out2,"x² de vector %d con su recontrusccion:\n",i);
    for(j=0;j<filas;j++){
      
      suma=suma+pow(gsl_matrix_get(vectores,j,i)-gsl_matrix_get(reconstruccion,j,i),2)/(filas);
      
    }
+   fprintf(out2,"%lf",suma);
+   suma=0;
  }
  
 
