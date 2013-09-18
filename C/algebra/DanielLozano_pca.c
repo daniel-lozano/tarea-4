@@ -11,18 +11,19 @@ void main (int argc,char **argv){
 
   FILE *file;
   int columnas=24;
-
+  printf("iniciando programa...\n");
   if(argc<1){
     printf("ingrese un archivo para comenzar\n");
     exit(1);}
-  
+
   file=fopen(argv[1],"r");
   int i,j,k;
   int filas=0;
   int fg=0;
+  printf("corre1?\n");
 
   do{
-    fg=fgetc(file) ;
+    fg=fgetc(file);
     if(fg=='\n'){
       filas++;
     }
