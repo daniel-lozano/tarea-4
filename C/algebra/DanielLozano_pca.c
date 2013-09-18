@@ -163,7 +163,7 @@ void main (int argc,char **argv){
     
     gsl_matrix *As=gsl_matrix_alloc(10,columnas);
     gsl_matrix *se=gsl_matrix_alloc(filas,10);
-    gsl_matrix *recontruccion=gsl_matrix_alloc(filas,columnas);
+    gsl_matrix *reconstruccion=gsl_matrix_alloc(filas,columnas);
 
     //se crea el arreglo de las 10 primeras señales
     
@@ -200,7 +200,7 @@ void main (int argc,char **argv){
       
       //se crea la matriz de recontruccion
 
-      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, se, As, 0.0, recontruccion);
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, se, As, 0.0, reconstruccion);
 
       printf("se ha hallado X²\n");
 
@@ -211,18 +211,16 @@ void main (int argc,char **argv){
 
  printf("hallando los X²...\n");
 
+ //se halla chi para cad par de vectores recontruccion-real
+
  for(i=0;i<columnas;i++){
-   
+
+   int suma=0;
+   fprintf(out2,"x² de vector %d con su recontrusccion:\n",i);
    for(j=0;j<filas;j++){
      
-     printf("x² de %d,%d:",i,j);
-     double suma=0;
+     suma=suma+pow(gsl_matrix_get(vectores,j,i)-gsl_matrix_get(reconstruccion,j,i),2)/(filas);
      
-     for(k=0;k<filas;k++){
-
-       suma=suma+(gsl_matrix_get(vectores,j,k)-gsl_matrix_get(vectores,i,k))/columnas;
-     }
-     fprintf(out2,"el valor de x² de el vector %d,%d es %lf",i,j,suma);
    }
  }
  
