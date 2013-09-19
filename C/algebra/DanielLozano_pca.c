@@ -12,7 +12,8 @@ void main (int argc,char **argv){
   FILE *file;
   int columnas=24;
   printf("iniciando programa...\n");
-  if(argc<1){
+ 
+  if(argc<2){
     printf("ingrese un archivo para comenzar\n");
     exit(1);}
 
@@ -43,11 +44,11 @@ void main (int argc,char **argv){
 
   //imprime los datos
 
-  // for(i=0;i<columnas;i++){
-  // for(j=0;j<filas;j++){
-  //   printf("%lf ",gsl_matrix_get(vectores,j,i));}
-  // printf("\n");
-  // }
+  /* for(i=0;i<columnas;i++){
+     for(j=0;j<filas;j++){
+     printf("%lf ",gsl_matrix_get(vectores,j,i));}
+   printf("\n");
+   }*/
 
 
   gsl_matrix *co= gsl_matrix_alloc(filas,filas);
@@ -71,6 +72,10 @@ void main (int argc,char **argv){
     }
     pro[i]=total;
   }
+  printf("promedios\n");
+  
+  // for(i=0;i<filas;i++){
+  // printf("promedio %d %lf\n",i,pro[i]);}
 
   //se creara la matriz de covarianza
  
@@ -87,10 +92,10 @@ void main (int argc,char **argv){
     }
   }
 
-
+ 
   //se imprime la matriz de covarianza----------------------
 
-  /**  printf("matriz de covarianza \n");
+  /*    printf("matriz de covarianza \n");
   for(i=0;i<filas;i++){
 
     for(j=0;j<filas;j++){
@@ -98,8 +103,8 @@ void main (int argc,char **argv){
       printf("%lf  " ,gsl_matrix_get(co,i,j));
     }
     printf("\n");
-    }*/
-  
+  }
+  */  
   //  gsl_matrix * vectores=gsl_matrix_alloc(filas,columnas);  printf("se creo la matriz de covarianza\n");
 
 //----------------------------------------------------------------------------------------------------------
@@ -113,11 +118,19 @@ void main (int argc,char **argv){
   gsl_vector *eval = gsl_vector_alloc (filas);
   printf("funciona eval?\n");
 
+  printf("la dimension de la matriz evec es de %d x %d\n",filas,filas);
+
+  printf("porque se muere en la alocacion de evec!!\n");
+  printf("se tiene ya la matriz de covarizan, los promedios y los datos guardados correctamente\n");
+
   //problema????????????????????????????????????????
-  gsl_matrix *evec = gsl_matrix_alloc (filas,filas);
-  printf("funciona evec?\n");
+
+    gsl_matrix *evec = gsl_matrix_alloc (filas,filas);
+
+    printf("funciona evec?\n");
   
-  gsl_eigen_symmv (co, eval, evec, w);
+    gsl_eigen_symmv (co, eval, evec, w);
+  
        
    
 //  gsl_eigen_symmv_sort (eval, evec,GSL_EIGEN_SORT_ABS_DESC);
@@ -134,7 +147,7 @@ void main (int argc,char **argv){
     FILE *out1;
     FILE *out2;
     out = fopen("DanielLozano_eigenVectors.dat","w");
-
+    
     //se imprimen los vectores propios
 
     for(i=0;i<filas;i++)
@@ -232,10 +245,14 @@ void main (int argc,char **argv){
 
  gsl_vector_free (eval);
  gsl_matrix_free (evec);
-    
+ gsl_matrix_free(se);
+ gsl_matrix_free(reconstruccion);
+ gsl_matrix_free(As);
+ gsl_matrix_free(co); 
      
 
 
 
 
+  
 }
